@@ -26,9 +26,22 @@ public class ProductService {
 	private ProductRepository repository;
 
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(Pageable pageable) {
-		Page<Product> page = repository.findAll(pageable);
-		return page.map(x -> new ProductDTO(x));
+	public Page<ProductDTO> findAllPaged(String nome, String preco, Pageable pageable) {
+
+		if(!nome.isBlank() && !nome.isEmpty()){
+			Page<Product> page = repository.findByName(nome, pageable);
+			return page.map(x -> new ProductDTO(x));
+		} else if(!preco.isBlank() && !preco.isEmpty() && preco.equalsIgnoreCase("ASC")) {
+			Page<Product> page = repository.filtrarPorNomeEOrdenarPorPrecoAsc(nome, pageable);
+			return page.map(x -> new ProductDTO(x));
+		} else if(!preco.isBlank() && !preco.isEmpty() && preco.equalsIgnoreCase("DESC")) {
+			Page<Product> page = repository.filtrarPorNomeEOrdenarPorPrecoDesc(nome, pageable);
+			return page.map(x -> new ProductDTO(x));
+		} else {
+			Page<Product> page = repository.findAll(pageable);
+			return page.map(x -> new ProductDTO(x));
+		}
+		
 	}
 
 	@Transactional(readOnly = true)
@@ -78,5 +91,7 @@ public class ProductService {
 		entity.setQtdEstoque(dto.getQtdEstoque());
 		entity.setData(new Date());
 	}
+
+
 
 }

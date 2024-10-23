@@ -34,12 +34,12 @@ public class ProductController {
 	@GetMapping
 	public ResponseEntity<Page<ProductDTO>> findAll(
 			@RequestParam(value = "nome", defaultValue = "") String nome,
-			@RequestParam(value = "preco", defaultValue = "") Double preco,
+			@RequestParam(value = "preco", defaultValue = "") String preco,
 			Pageable pageable) {
 		
 		//Parametros: page, size, sort
 		
-		Page<ProductDTO> list = service.findAllPaged(pageable);
+		Page<ProductDTO> list = service.findAllPaged(nome.trim(), preco.trim(),  pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
